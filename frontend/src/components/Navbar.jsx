@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 export default function Navbar() {
   const { isAuthenticated, auth, logout } = useAuth();
   const isAdmin = (auth?.roles || []).includes("ADMIN");
+  const isTechnician = (auth?.roles || []).includes("TECHNICIAN");
+  const isStaff = (auth?.roles || []).includes("STAFF");
 
   return (
     <header className="topbar">
@@ -11,7 +13,7 @@ export default function Navbar() {
         Smart Campus
       </Link>
 
-      <nav className="topnav">
+      <nav className="topnav" style={{ flexWrap: "wrap" }}>
         {!isAuthenticated && (
           <>
             <NavLink to="/login" className="nav-link">
@@ -25,11 +27,21 @@ export default function Navbar() {
 
         {isAuthenticated && (
           <>
+            {(isTechnician || isStaff) && (
+              <NavLink to="/technician/tickets" className="nav-link">
+                My Tickets
+              </NavLink>
+            )}
             {isAdmin && (
               <NavLink to="/admin/users" className="nav-link">
                 Admin
               </NavLink>
             )}
+            
+            <Link to="/notifications" className="notif-button" title="Notifications">
+              🔔
+            </Link>
+
             <span className="user-pill">{auth?.email}</span>
             <button type="button" className="ghost-btn" onClick={logout}>
               Logout
